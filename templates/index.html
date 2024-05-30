@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Between File or Image</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            color: #fff;
+            padding: 30px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .file-card {
+            background: linear-gradient(135deg, #580C78, #580C78);
+            color: white;
+        }
+
+        .image-card {
+            background: linear-gradient(135deg, #00002F, #00002F);
+            color: white;
+        }
+
+        h1 {
+            color: #343a40;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 i {
+            margin-right: 15px;
+            color: #42a5f5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">
+            Choose Between File or Image &nbsp;<i class="fas fa-folder-open"></i>
+        </h1>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <a href="/file" style="text-decoration: none;">
+                    <div class="card file-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-file-alt card-icon"></i>
+                            <h5 class="card-title">File</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 mb-4">
+                <a href="/image" style="text-decoration: none;">
+                    <div class="card image-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-image card-icon"></i>
+                            <h5 class="card-title">Image</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
