@@ -7,8 +7,7 @@ import os
 import cv2
 import numpy as np
 from skimage.feature import hog
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+
 
 # Initialize the Flask application
 app = Flask(__name__)
