@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .dropzone {
+            border: 2px dashed #8e44ad;
+            border-radius: 10px;
+            padding: 60px;
+            text-align: center;
+            background-color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            font-size: 1.5rem;
+        }
+
+        .dropzone:hover {
+            background-color: #f3f2f4;
+        }
+
+        .dropzone.dragover {
+            background-color: #e8e7ea;
+            border-color: #6c5b7b;
+        }
+
+        .dropzone i {
+            font-size: 4rem;
+            color: #8e44ad;
+        }
+
+        .upload-btn {
+            background-color: #8e44ad;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            font-size: 1.25rem;
+        }
+
+        .upload-btn:hover {
+            background-color: #7a3794;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .back-icon {
+            font-size: 2rem;
+            color: #8e44ad;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .alert {
+            margin-top: 20px;
+            display: none;
+        }
+
+        #uploadedImage {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+
+        #predictionResult {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .result-malware {
+            color: #d63031;
+        }
+
+        .result-not-malware {
+            color: #00b894;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <i class="fas fa-arrow-left back-icon" onclick="window.location.href='/'"></i>
+        <div id="message" class="alert" role="alert"></div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="image">Choose image to upload</label>
+                        <input type="file" class="form-control" id="image" name="image">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Predict</button>
+                </form>
+                <img id="uploadedImage" src="#" alt="Uploaded Image" style="display: none;">
+                <div id="predictionResult" class="mt-4">
+                    <!-- Prediction result will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const message = document.getElementById('message');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const predictionResult = document.getElementById('predictionResult');
+
+        uploadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
+
+            fetch('/predict_image', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(result => {
+                    const [filename, prediction] = result.split(':');
+                    predictionResult.innerHTML = `
+                        <strong>File Name:</strong> ${filename}<br>
+                        <strong>Prediction:</strong> <span class="${prediction.trim() === 'Malware' ? 'result-malware' : 'result-not-malware'}">${prediction}</span>
+                    `;
+                    predictionResult.style.display = 'block';
+                    uploadedImage.src = URL.createObjectURL(document.getElementById('image').files[0]);
+                    uploadedImage.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('An error occurred while uploading the file.', 'alert-danger');
+                });
+        });
+
+        function showMessage(messageText, alertClass) {
+            message.innerHTML = `
+                <span>${messageText}</span>
+                <button class="close-btn" onclick="hideMessage()">×</button>
+            `;
+            message.className = `alert ${alertClass}`;
+            message.style.display = 'block';
+        }
+
+        function hideMessage() {
+            message.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
