@@ -4,12 +4,31 @@ import pefile
 import joblib
 from werkzeug.utils import secure_filename
 import os
+import cv2
+import numpy as np
+from skimage.feature import hog
+
 
 # Initialize the Flask application
 app = Flask(__name__)
 
 # Load the trained model
-model = joblib.load('best_model.pkl')
+model = joblib.load('best_model2.pkl')
+
+# Load the model for predicting malware from images
+model_image = joblib.load('best_model_RDM.pkl')
+
+# Load the model for predicting malware types
+malware_type_model = joblib.load('malware_classifier_model.pkl')
+
+
+# Define function to extract features from images
+def extract_features(image_path):
+    image = cv2.imread(image_path)
+    image = cv2.resize(image, (64, 64))
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    hog_features, hog_image = hog(gray_image, pixels_per_cell=(8, 8), cells_per_block=(2, 2), visualize=True)
+    return hog_features
 
 # Define the features used by the model
 selected_features = ['ImageBase', 'Characteristics', 'SizeOfStackReserve',
@@ -92,6 +111,15 @@ def home():
 def file_page():
     return render_template('file.html')
 
+@app.route('/image')
+def image_page():
+    return render_template('image.html')
+
+@app.route('/typemalware')
+def typemalware_page():
+    return render_template('typemalware.html')
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -123,6 +151,55 @@ def upload_file():
         return jsonify({'result': result})
 
     return jsonify({'error': 'Invalid file type.'}), 400
+
+# Route for uploading image
+@app.route('/predict_image', methods=['POST'])
+def predict_image():
+    if 'image' not in request.files:
+        return 'No image part'
+    image = request.files['image']
+    if image.filename == '':
+        return 'No selected image'
+    if image:
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
+        
+        # Charger l'image et la convertir en niveaux de gris
+        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        img = cv2.resize(img, (42, 42))  # Adapter selon les besoins du modèle
+        img = img.flatten().reshape(1, -1)
+        
+        pred = model_image.predict(img)
+        result = 'Malware' if pred[0] == 1 else 'Not Malware'
+        return f'Prediction for image {filename}: {result}'
+
+    
+@app.route('/typemalware', methods=['POST'])
+def predict_typemalware():
+    if 'image' not in request.files:
+        return 'No image part'
+    image = request.files['image']
+    if image.filename == '':
+        return 'No selected image'
+    if image:
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
+        
+        # Charger l'image et la convertir en niveaux de gris
+        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        img = cv2.resize(img, (128, 128))  # Adapter selon les besoins du modèle
+        img = img.flatten().reshape(1, -1)
+        
+        pred = malware_type_model.predict(img)
+        result = f'Type of Malware: {pred[0]}'
+        return jsonify({'result': result})
+
+
+    return jsonify({'error': 'Invalid image type.'}), 400   
+   
+
 
 if __name__ == '__main__':
     app.run(debug=True)

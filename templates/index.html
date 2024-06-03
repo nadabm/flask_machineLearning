@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Between File or Image</title>
+    <title>Choose Between File, Image, or Type of Malware</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
@@ -49,6 +49,11 @@
             color: white;
         }
 
+        .malware-card {
+            background: linear-gradient(135deg, #0A5211, #0A5211);
+            color: white;
+        }
+
         h1 {
             color: #343a40;
             margin-bottom: 30px;
@@ -69,10 +74,10 @@
 <body>
     <div class="container">
         <h1 class="text-center">
-            Choose Between File or Image &nbsp;<i class="fas fa-folder-open"></i>
+            Choose Between File, Image, or Type of Malware &nbsp;<i class="fas fa-folder-open"></i>
         </h1>
         <div class="row">
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <a href="/file" style="text-decoration: none;">
                     <div class="card file-card text-center">
                         <div class="card-body">
@@ -82,12 +87,22 @@
                     </div>
                 </a>
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <a href="/image" style="text-decoration: none;">
                     <div class="card image-card text-center">
                         <div class="card-body">
                             <i class="fas fa-image card-icon"></i>
                             <h5 class="card-title">Image</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 mb-4">
+                <a href="/typemalware" style="text-decoration: none;">
+                    <div class="card malware-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-bug card-icon"></i>
+                            <h5 class="card-title">Type de Malware</h5>
                         </div>
                     </div>
                 </a>
